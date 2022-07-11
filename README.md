@@ -1,7 +1,7 @@
 # Fast in-place Walsh-Hadamard Transform
-Author or source: Timo H Tossavainen
-Type: wavelet transform
-Created: 2002-01-17 01:54:52
+- Author or source: Timo H Tossavainen
+- Type: wavelet transform
+- Created: 2002-01-17 01:54:52
 
 IIRC, They're also called walsh-hadamard transforms.
 Basically like Fourier, but the basis functions are squarewaves with different sequencies.
