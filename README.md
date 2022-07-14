@@ -81,7 +81,8 @@ begin
          setLength(result,R+16);
 
        result[R] := StrToInt( copy(S,K,I-K) );
-
+       if (K>1) and (S[K-1] = '-') then
+            result[R] := -result[R];
        inc(R);
      end;
    end;
