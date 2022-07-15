@@ -17,11 +17,11 @@ function splitInt(const s : string) : TArray<Integer>; forward;
 
 procedure TForm2.Memo1Change(Sender: TObject);
 var
-  lst : TFHWList;
+  lst : TFWHList;
   i : integer;
   s : string;
 begin
-  lst := TFHWList.create;
+  lst := TFWHList.create;
   lst.AddRange( splitInt( memo1.Text ));
   lst.transform;
   s := '';
