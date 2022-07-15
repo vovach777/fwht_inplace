@@ -1,4 +1,3 @@
-(* port  https://www.musicdsp.org/en/latest/Analysis/18-fast-in-place-walsh-hadamard-transform.html *)
 unit fwht;
 
 interface
@@ -6,13 +5,15 @@ interface
 uses Types, Generics.Collections;
 
 type
- TFHWList = class( TList<Integer> )
+ TFWHList = class(TList<Integer>)
  private
+    FDivBy: integer;
     function Getsequency_ordering(Index: Integer): Integer;
     procedure Setsequency_ordering(Index: Integer; const Value: Integer);
  public
     procedure transform;
     procedure inverse;
+    procedure divBy(value : integer);
     function DoPermutationMap(Index: Integer): Integer;
     property sequency_ordering[Index: Integer]: Integer read Getsequency_ordering
         write Setsequency_ordering;
@@ -90,21 +91,39 @@ begin
   end;
 end;
 
-function TFHWList.Getsequency_ordering(Index: Integer): Integer;
+function TFWHList.Getsequency_ordering(Index: Integer): Integer;
 begin
   Result := Items[ DoPermutationMap(index) ];
 end;
 
-procedure TFHWList.inverse;
+procedure TFWHList.inverse;
+var
+  i : integer;
+  q : integer;
+begin
+   if FDivBy = 0 then
+     exit;
+   q := count div FDivBy;
+   transform;
+   if q <= 1 then
+      exit;
+   for i := 0 to Count-1 do
+      Items[i] := Items[i] div q;
+   FDivBy := 0;
+end;
+
+procedure TFWHList.DivBy(value: integer);
 var
   i : integer;
 begin
-   transform;
-   for i := 0 to Count-1 do
-      Items[i] := Items[i] div count;
+  if (FDivBy = 0) or (value<2) then
+    exit;
+  FDivBy := FDivBy * value;
+  for i := 0 to Count-1 do
+   Items[i] := Items[i] div value;
 end;
 
-function TFHWList.DoPermutationMap(Index: Integer): Integer;
+function TFWHList.DoPermutationMap(Index: Integer): Integer;
 var
   log2 : integer;
 begin
@@ -126,18 +145,19 @@ begin
   result := g_permutation_maps[ log2 ][Index];
 end;
 
-procedure TFHWList.Setsequency_ordering(Index: Integer; const Value: Integer);
+procedure TFWHList.Setsequency_ordering(Index: Integer; const Value: Integer);
 begin
   Items[ DoPermutationMap(index) ] := value;
 end;
 
-procedure TFHWList.transform;
+procedure TFWHList.transform;
 var
   log2,i,j,k,max_k : integer;
 begin
   if Count = 0 then
     exit;
   log2 := ilog2(Count);
+  FDivBy := 1; //reset
   count := 1 shl log2; //adject count
   for i := 0 to log2-1 do
   begin
