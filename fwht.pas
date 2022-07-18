@@ -135,7 +135,7 @@ begin
 
   log2 := ilog2(count);
 
-  if log2 > length( g_permutation_maps ) then
+  if log2 >= length( g_permutation_maps ) then
      SetLength( g_permutation_maps, log2+1 );
 
   if length( g_permutation_maps[ log2 ] ) = 0 then
